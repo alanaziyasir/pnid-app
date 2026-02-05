@@ -1,0 +1,22 @@
+# Minimal requirements for basic functionality
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.6
+pillow>=10.0.0
+aiofiles>=23.0.0
+python-dotenv>=1.0.0
+pyyaml>=6.0
+watchfiles>=0.20.0
+numpy>=1.23.5
+scipy>=1.4.1
+matplotlib>=3.3
+requests>=2.32.2
+networkx>=3.2
+lxml>=4.9
+neo4j>=5.18
+tqdm>=4.66.3
+setuptools>=70.0.0
+
+# Try OpenCV - headless version is lighter
+opencv-python-headless>=4.8.0
+
