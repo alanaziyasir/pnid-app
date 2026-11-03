@@ -1,68 +1,41 @@
 # P&ID Digitization Backend
 
-FastAPI backend for processing P&ID diagrams.
+FastAPI provides upload/storage and chat endpoints. Follow
+[QUICK_START.md](../QUICK_START.md) for complete installation, ports, environment
+variables, credential-free local QA, and browser regression tests.
 
-## Setup
+## Standalone development (Linux/macOS)
 
-1. Create virtual environment:
-```bash
-python -m venv venv
-```
-
-2. Activate virtual environment:
-```bash
-# Windows
-venv\Scripts\activate
-
-# Linux/Mac
-source venv/bin/activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-## Running the Server
+From the repository root:
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+python3 -m venv backend/venv
+backend/venv/bin/python -m pip install -r backend/requirements-deploy.txt
+cd backend
+venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-The API will be available at:
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+On Windows use `venv\Scripts\python.exe`. For optional live chat, copy
+`.env.example` to `.env`, set `GROQ_API_KEY`, and append `--env-file .env` to the
+Uvicorn command. The app does not automatically load `.env`. Do not commit keys.
+The default upload/preview workflow requires no credentials or database.
 
-## Project Structure
+## API
 
-```
-backend/
-├── app/
-│   ├── __init__.py
-│   ├── main.py           # FastAPI app initialization
-│   └── routers/
-│       ├── __init__.py
-│       └── upload.py     # File upload endpoints
-├── uploads/              # Uploaded files storage
-├── config.py             # Configuration settings
-├── requirements.txt      # Python dependencies
-└── README.md
-```
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /health` | Health check |
+| `POST /api/upload` | Multipart `file`, up to 50 MB |
+| `GET /api/files` | List stored uploads |
+| `GET /uploads/{stored_name}` | Retrieve a stored file |
+| `GET /api/chat/models` | Available chat models |
+| `GET /api/chat/graph-info` | Optional loaded graph context |
+| `POST /api/chat/completions` | Chat via Groq (or the local QA provider) |
+| `GET /docs` | Interactive Swagger UI |
 
-## API Endpoints
+Allowed extensions: `.pdf`, `.dwg`, `.dgn`, `.jpg`, `.jpeg`, `.png`, `.zip`,
+`.svg`, `.xml`. Use PNG/JPEG for the browser image preview.
 
-### Upload File
-- **POST** `/api/upload`
-- Upload a P&ID diagram file
-- Accepts: .pdf, .dwg, .dgn, .jpg, .png, .zip, .svg, .xml
-- Max size: 50MB
-
-### List Files
-- **GET** `/api/files`
-- Get list of all uploaded files
-
-### Health Check
-- **GET** `/health`
-- Check API health status
-
+`requirements-deploy.txt` covers this API. The larger ML requirement files are
+not needed for startup. There are no `/api/process/*` endpoints; the frontend
+analysis currently displays sample data, not newly computed detections.

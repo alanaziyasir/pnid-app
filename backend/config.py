@@ -8,8 +8,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 # Upload settings
-UPLOAD_DIR = BASE_DIR / "uploads"
-UPLOAD_DIR.mkdir(exist_ok=True)
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", str(BASE_DIR / "uploads"))).resolve()
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 # Allowed file types
 ALLOWED_EXTENSIONS = {".pdf", ".dwg", ".dgn", ".jpg", ".jpeg", ".png", ".zip", ".svg", ".xml"}
