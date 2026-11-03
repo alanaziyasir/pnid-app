@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
 # Groq API configuration - use environment variable
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_API_URL = os.getenv("GROQ_API_URL", "https://api.groq.com/openai/v1/chat/completions")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
 # Model mapping - using valid Groq models

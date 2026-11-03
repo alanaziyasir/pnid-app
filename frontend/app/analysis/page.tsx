@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense, useRef } from 'react';
 import './analysis.css';
+import { API_URL } from '../../lib/api';
 
 // Class ID to Name mapping
 const CLASS_NAMES: Record<number, string> = {
@@ -158,7 +159,7 @@ function AnalysisContent() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'}/api/chat/completions`, {
+      const response = await fetch(`${API_URL}/api/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -248,7 +249,7 @@ function AnalysisContent() {
                   <div className="image-with-boxes">
                     <img 
                       ref={imageRef}
-                      src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'}${decodeURIComponent(fileUrl)}`}
+                      src={`${API_URL}${decodeURIComponent(fileUrl)}`}
                       alt={fileName ? decodeURIComponent(fileName) : 'P&ID Diagram'}
                       className="diagram-overlay-image"
                       onLoad={handleImageLoad}
@@ -388,6 +389,7 @@ function AnalysisContent() {
               />
               <button 
                 className="chat-send-btn"
+                aria-label="Send message"
                 onClick={sendMessage}
                 disabled={isLoading || !chatInput.trim()}
               >
