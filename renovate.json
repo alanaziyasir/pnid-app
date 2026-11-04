@@ -4,10 +4,10 @@
   "minimumReleaseAge": "7 days",
   "dependencyDashboard": false,
   "automerge": false,
+  "enabledManagers": ["pip_requirements"],
+  "includePaths": ["requirements*.in", "backend/requirements*.in"],
   "packageRules": [
-    {"matchManagers": ["npm"], "groupName": "frontend dependencies"},
-    {"matchManagers": ["pip_requirements"], "groupName": "Python dependency profiles"},
-    {"matchManagers": ["github-actions"], "groupName": "GitHub Actions"}
+    {"matchManagers": ["pip_requirements"], "groupName": "Python dependency profiles"}
   ],
   "pip_requirements": {
     "managerFilePatterns": ["/(^|/)requirements[^/]*\\.in$/"]

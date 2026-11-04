@@ -50,9 +50,14 @@ not configured. Checks pass; neither warning is suppressed.
   committed documentation, active agent co-authorship, bot review comments,
   and backlog health cannot be manufactured by local files.
 - **CI and integrations:** commit/push the reviewed changes to run workflows.
-  Install/enable Renovate for update PRs. Allow Actions release PRs. Manually
-  sync the checked-in label taxonomy. Configure required checks/branch protection.
-  No external writes or settings changes were performed for this task.
+  Merge `.github/dependabot.yml` to the default branch to activate native npm
+  and GitHub Actions update jobs, then verify their logs and real bot PRs as
+  described in [Contributing](../CONTRIBUTING.md#automated-update-prs).
+  Python updates still require installing/enabling Renovate and regenerating
+  the coupled locks with `make lock`; no active Python runner is claimed.
+  Allow Actions release PRs. Manually sync the checked-in label taxonomy.
+  Configure required checks/branch protection.
+  Repository policies and external app installations are not changed by these files.
 - **Automated code review:** needs a chosen provider, credentials/installation,
   and explicit permission to post review content. Existing checks do not count
   as generated review comments.
