@@ -35,10 +35,37 @@ requirements. Resolution is ordered so shared packages agree across profiles.
 Use npm install for frontend changes and include its lockfile.
 
 **Minimum release age: seven days.** Wait at least seven days after publication
-before merging ordinary dependency updates. Renovate encodes the same delay and
-groups related updates; security emergencies may be expedited only with an
+before merging ordinary dependency updates. Dependabot and Renovate encode the
+same delay; security emergencies may be expedited only with an
 explicit review explaining the risk and validation. Do not use force or legacy
 peer-dependency bypasses to install an incompatible tree.
+
+### Automated update PRs
+
+[Dependabot](.github/dependabot.yml) checks the frontend npm manifest/lockfile and
+GitHub Actions every Monday at 06:00 UTC. It groups minor/patch updates per
+ecosystem, leaves major updates as separate PRs, and limits each ecosystem to five
+open version-update PRs. Its seven-day cooldown applies to ordinary version
+updates, not security updates. PRs need review and passing quality gates; no
+auto-merge workflow is configured.
+
+GitHub starts version updates when this configuration reaches the default branch.
+No Renovate installation, personal token, or custom write-enabled workflow is
+needed for these ecosystems. After merging, check **Insights > Dependency graph >
+Dependabot** for both update jobs and their logs. Confirm a real
+`dependabot[bot]` PR includes the changed manifest/lockfile or action refs and runs
+the normal Quality gates workflow. A successful scan with no eligible updates
+does not yet establish a history of update PRs. If jobs are absent or disabled,
+an owner should check repository/organization Dependabot and Actions policies,
+then use **Check for updates** on that page.
+
+[Renovate](renovate.json) is scoped to Python requirement inputs only, preventing
+duplicate npm/Actions PRs if the Renovate app is later enabled. Python automation
+still requires installing/enabling that app; this file alone is not an active
+runner. Python PRs must include regenerated hashes across all four profiles:
+run `make lock`, commit every resulting lockfile change, and run `make check`
+and `make test` before merging. Dependabot does not independently rewrite these
+coupled Python profiles.
 
 The frontend PostCSS override stays within version 8 and patches the vulnerable
 copy bundled by Next.js 15. Remove it only once the framework requires a patched
