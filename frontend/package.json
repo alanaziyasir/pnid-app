@@ -6,6 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:complexity": "eslint . --max-warnings 0",
+    "lint": "eslint . --max-warnings 0",
+    "check:unused": "knip",
+    "check:duplicates": "jscpd --config ../.jscpd.json app lib ../backend/app ../scripts",
+    "analyze": "ANALYZE=true next build",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "type-check": "next typegen && tsc --noEmit",
     "test:e2e": "playwright test"
   },
@@ -16,9 +25,22 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "15.5.28",
     "@playwright/test": "1.61.1",
-    "@types/node": "20.17.17",
+    "@types/node": "24.19.2",
     "@types/react": "19.2.2",
-    "typescript": "5.6.3"
+    "@typescript-eslint/eslint-plugin": "8.72.1",
+    "@typescript-eslint/parser": "8.72.1",
+    "@vitest/coverage-v8": "5.1.0",
+    "eslint": "10.14.0",
+    "jscpd": "5.4.2",
+    "knip": "6.44.1",
+    "prettier": "3.9.10",
+    "typescript": "5.6.3",
+    "vitest": "5.1.0"
+  },
+  "overrides": {
+    "minimatch": "11.0.4",
+    "postcss": "8.5.32"
   }
 }

@@ -1,0 +1,47 @@
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["backend/venv_ubuntu", "backend/venv"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "N", "C901"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["backend/app", "backend/config.py"]
+mypy_path = "backend"
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests", "scripts"]
+pythonpath = ["backend", "scripts"]
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers --durations=10"
+markers = ["integration: exercises the FastAPI application through HTTP"]
+
+[tool.coverage.run]
+source = ["backend"]
+omit = ["backend/venv/*", "backend/venv_ubuntu/*", "backend/tests/*"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+
+[tool.deptry]
+requirements_files = ["backend/requirements-deploy.in"]
+requirements_files_dev = ["requirements-dev.in"]
+known_first_party = ["app", "config"]
+extend_exclude = ["backend/tests", "scripts", "frontend"]
+
+[tool.deptry.per_rule_ignores]
+# CLI/server integrations, not unused application libraries.
+DEP002 = ["uvicorn", "python-multipart", "python-dotenv"]

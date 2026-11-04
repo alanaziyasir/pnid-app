@@ -1,0 +1,37 @@
+minimum_pre_commit_version: '4.3.0'
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        # Check modifications too, not just newly added files.
+        args: [--maxkb=1024, --enforce-all]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.3
+    hooks:
+      - id: ruff-format
+        args: [--check]
+      - id: ruff-check
+
+  - repo: local
+    hooks:
+      - id: frontend-format
+        name: Frontend formatting
+        language: system
+        entry: npm --prefix frontend run format:check
+        files: ^frontend/.*\.(tsx?|jsx?|[cm]js|json|css|md|ya?ml)$
+        pass_filenames: false
+      - id: frontend-complexity
+        name: Frontend lint and complexity
+        language: system
+        entry: npm --prefix frontend run lint
+        files: ^frontend/.*\.(tsx?|jsx?|[cm]js|json)$
+        pass_filenames: false
+      - id: repository-consistency
+        name: Documentation, debt markers, and dependency consistency
+        language: python
+        entry: python scripts/check_repo.py
+        pass_filenames: false
+        always_run: true

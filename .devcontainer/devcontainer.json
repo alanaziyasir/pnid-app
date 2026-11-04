@@ -1,0 +1,24 @@
+{
+  "name": "P&ID frontend and API",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "24" }
+  },
+  "postCreateCommand": "make setup && cd frontend && npx playwright install --with-deps chromium",
+  "forwardPorts": [3000, 8000],
+  "portsAttributes": {
+    "3000": { "label": "P&ID UI", "onAutoForward": "notify" },
+    "8000": { "label": "P&ID API", "onAutoForward": "silent" }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/backend/venv/bin/python",
+        "python.analysis.extraPaths": ["${containerWorkspaceFolder}/backend"],
+        "eslint.workingDirectories": ["frontend"],
+        "[python]": { "editor.defaultFormatter": "charliermarsh.ruff" }
+      },
+      "extensions": ["ms-python.python", "ms-python.mypy-type-checker", "charliermarsh.ruff", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  }
+}

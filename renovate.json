@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":disableDependencyDashboard"],
+  "minimumReleaseAge": "7 days",
+  "dependencyDashboard": false,
+  "automerge": false,
+  "packageRules": [
+    {"matchManagers": ["npm"], "groupName": "frontend dependencies"},
+    {"matchManagers": ["pip_requirements"], "groupName": "Python dependency profiles"},
+    {"matchManagers": ["github-actions"], "groupName": "GitHub Actions"}
+  ],
+  "pip_requirements": {
+    "managerFilePatterns": ["/(^|/)requirements[^/]*\\.in$/"]
+  }
+}

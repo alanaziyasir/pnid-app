@@ -21,6 +21,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-This tests upload, stored bytes, preview/fullscreen, analysis navigation and tabs,
-chat, removal, and file validation. The quick start documents browser system
+This tests upload, stored bytes, preview/fullscreen, real template detection,
+blank/corrupt images, loading and stale-result cancellation, analysis tabs, chat,
+removal, and file validation. Backend detection regressions also translate symbols,
+test duplicate suppression, and reject unsafe paths and oversized decoded images.
+The quick start documents browser system
 dependencies, ports, environment variables, expected results, and cleanup.

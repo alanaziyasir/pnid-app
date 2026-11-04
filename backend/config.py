@@ -1,6 +1,7 @@
-﻿"""
+"""
 Configuration settings for the P&ID Digitization backend
 """
+
 import os
 from pathlib import Path
 
@@ -16,6 +17,11 @@ ALLOWED_EXTENSIONS = {".pdf", ".dwg", ".dgn", ".jpg", ".jpeg", ".png", ".zip", "
 
 # Max file size (50 MB)
 MAX_FILE_SIZE = 50 * 1024 * 1024
+
+# Operational kill switch, not an authorization boundary.
+ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true").lower() == "true"
+# Scrape only on a trusted network; the endpoint is disabled by default.
+ENABLE_METRICS = os.getenv("ENABLE_METRICS", "false").lower() == "true"
 
 # CORS settings
 ALLOWED_ORIGINS = [

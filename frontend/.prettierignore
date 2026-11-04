@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+playwright-report/
+test-results/
+next-env.d.ts
+*.tsbuildinfo
+package-lock.json
+# Static artwork is not source code. The file-size hook still checks these files.
+public/

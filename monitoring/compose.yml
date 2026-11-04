@@ -1,0 +1,18 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.9.1
+    network_mode: host
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.listen-address=127.0.0.1:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml:ro
+  blackbox:
+    image: prom/blackbox-exporter:v0.28.0
+    network_mode: host
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+      - --web.listen-address=127.0.0.1:9115
+    volumes:
+      - ./blackbox.yml:/etc/blackbox/blackbox.yml:ro
