@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/alanaziyasir/pnid-app/compare/v1.1.0...v1.1.1) (2026-11-04)
+
+
+### Bug Fixes
+
+* Enable native dependency update automation ([4e87aeb](https://github.com/alanaziyasir/pnid-app/commit/4e87aeb32c5d6249da3de1526191eb666eacfadb))
+* Enable native dependency update automation ([775c6cc](https://github.com/alanaziyasir/pnid-app/commit/775c6cc2dcda5fec1d0033a19ca82d9d46e2db50))
+
 ## [1.1.0](https://github.com/alanaziyasir/pnid-app/compare/v1.0.0...v1.1.0) (2026-11-04)
 
 
