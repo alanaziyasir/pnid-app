@@ -1,0 +1,36 @@
+rule_files:
+  - alerts.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'probe_success{job="application-health", instance="frontend"}'
+        values: "0 0 0 0"
+      - series: 'probe_success{job="application-health", instance="backend"}'
+        values: "1 1 1 1"
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: ApplicationHealthFailed
+        exp_alerts:
+          - exp_labels:
+              job: application-health
+              instance: frontend
+              severity: critical
+            exp_annotations:
+              summary: Application health probe failed
+              runbook: docs/runbooks/operations.md
+  - interval: 1m
+    input_series:
+      - series: 'pnid_http_requests_total{status="500"}'
+        values: "0+10x15"
+      - series: 'pnid_http_requests_total{status="200"}'
+        values: "0+90x15"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: APIErrorRateHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: More than 5% of API requests fail
+              runbook: docs/runbooks/operations.md

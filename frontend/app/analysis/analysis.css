@@ -2,7 +2,7 @@
 .analysis-page {
   width: 100%;
   height: 100vh;
-  background: #F7F7F7;
+  background: #f7f7f7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +31,7 @@
 /* P&ID Section (Left) - 60% */
 .pid-section {
   flex: 0 0 60%;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 24px;
   box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -56,16 +56,16 @@
 /* SVG viewBox: 577x665, tabs rect at y=40 height=40, image at y=88 */
 .pid-tabs {
   position: absolute;
-  top: 6%;         /* 40/665 */
+  top: 6%; /* 40/665 */
   left: 0;
   width: 100%;
   display: flex;
   align-items: center;
   gap: 0;
   z-index: 20;
-  background: #F7F7F7;
+  background: #f7f7f7;
   padding: 0 3%;
-  height: 6%;      /* 40/665 */
+  height: 6%; /* 40/665 */
   border-radius: 12px;
   box-sizing: border-box;
   margin: 0;
@@ -96,7 +96,7 @@
 .pid-tab.active {
   background: #fff;
   color: #363636;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .tab-count {
@@ -106,7 +106,7 @@
   min-width: clamp(16px, 1.8vw, 20px);
   height: clamp(16px, 1.8vw, 20px);
   padding: 0 0.5vw;
-  background: #D4D4D4;
+  background: #d4d4d4;
   border-radius: 50%;
   font-size: clamp(10px, 1.1vw, 13px);
   font-weight: 500;
@@ -114,14 +114,14 @@
 }
 
 .pid-tab.active .tab-count {
-  background: #00879F;
+  background: #00879f;
   color: #fff;
 }
 
 /* Chat Section (Right) - 40% */
 .chat-section {
   flex: 1;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 24px;
   box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
   display: flex;
@@ -147,8 +147,8 @@
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  background: #FFFFFF;
-  border-bottom: 1px solid #EEEEEE;
+  background: #ffffff;
+  border-bottom: 1px solid #eeeeee;
   flex-shrink: 0;
   position: relative;
 }
@@ -165,13 +165,13 @@
   font-size: 15px;
   font-weight: 600;
   color: #363636;
-  background: #F5F5F5;
+  background: #f5f5f5;
   border-radius: 10px;
   transition: background 0.2s;
 }
 
 .dropdown-trigger-area:hover {
-  background: #EBEBEB;
+  background: #ebebeb;
 }
 
 .dropdown-trigger-area::after {
@@ -191,8 +191,8 @@
   left: 0;
   margin-top: 8px;
   width: 160px;
-  background: #FFFFFF;
-  border: 1px solid #E5E5E5;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
   border-radius: 12px;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
   z-index: 100;
@@ -218,11 +218,11 @@
 }
 
 .dropdown-item:hover {
-  background: #F7F7F7;
+  background: #f7f7f7;
 }
 
 .dropdown-item.selected {
-  background: #F0F0F0;
+  background: #f0f0f0;
 }
 
 .check-icon {
@@ -239,7 +239,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #F9F9F9;
+  background: #f9f9f9;
 }
 
 .chat-placeholder {
@@ -267,14 +267,14 @@
 
 .chat-message.user {
   align-self: flex-end;
-  background: linear-gradient(135deg, #00879F, #00D49C);
+  background: linear-gradient(135deg, #00879f, #00d49c);
   color: white;
   border-bottom-right-radius: 4px;
 }
 
 .chat-message.assistant {
   align-self: flex-start;
-  background: #F0F0F0;
+  background: #f0f0f0;
   color: #363636;
   border-bottom-left-radius: 4px;
 }
@@ -302,7 +302,9 @@
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0);
   }
   40% {
@@ -315,26 +317,28 @@
   gap: 12px;
   align-items: center;
   padding: 16px 20px;
-  background: #FFFFFF;
-  border-top: 1px solid #EEEEEE;
+  background: #ffffff;
+  border-top: 1px solid #eeeeee;
   flex-shrink: 0;
 }
 
 .chat-input {
   flex: 1;
-  border: 1px solid #E5E5E5;
+  border: 1px solid #e5e5e5;
   outline: none;
   font-size: 16px !important;
   font-family: 'Inter', sans-serif;
   padding: 14px 18px;
-  background: #F9F9F9;
+  background: #f9f9f9;
   border-radius: 12px;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .chat-input:focus {
-  border-color: #00879F;
-  background: #FFFFFF;
+  border-color: #00879f;
+  background: #ffffff;
 }
 
 .chat-input::placeholder {
@@ -345,13 +349,15 @@
   width: 40px;
   height: 40px;
   border: none;
-  background: linear-gradient(135deg, #00879F, #00D49C);
+  background: linear-gradient(135deg, #00879f, #00d49c);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .chat-send-btn:hover:not(:disabled) {
@@ -379,16 +385,16 @@
 /* SVG viewBox: 577x665, image rect at y=88 height=576.5 rx=24 */
 .diagram-overlay {
   position: absolute;
-  top: 13.23%;     /* 88/665 */
+  top: 13.23%; /* 88/665 */
   left: 0;
   right: 0;
-  bottom: 0.08%;   /* ~0.5/665 */
+  bottom: 0.08%; /* ~0.5/665 */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F7F7F7;  /* Match SVG gray background */
-  border-radius: 24px;  /* matches SVG rx=24 */
-  overflow: auto;  /* Allow scrolling when zoomed */
+  background: #f7f7f7; /* Match SVG gray background */
+  border-radius: 24px; /* matches SVG rx=24 */
+  overflow: auto; /* Allow scrolling when zoomed */
   z-index: 5;
   padding: 0;
 }
@@ -440,7 +446,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   z-index: 5;
 }
 
@@ -475,7 +481,7 @@
 /* Summary Container - Bottom Section */
 .summary-container {
   height: 280px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 24px;
   padding: 24px 32px;
   box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
@@ -494,7 +500,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 20px;
   font-weight: 600;
-  color: #1A1A1A;
+  color: #1a1a1a;
   margin: 0;
 }
 
@@ -502,21 +508,21 @@
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #00879F;
-  background: #E6F7F9;
+  color: #00879f;
+  background: #e6f7f9;
   padding: 6px 12px;
   border-radius: 16px;
 }
 
 .summary-content {
   flex: 1;
-  overflow: hidden;
+  min-height: 0;
+  overflow: auto;
 }
 
 .summary-sections {
   display: flex;
   gap: 48px;
-  height: 100%;
 }
 
 /* Components Section */
@@ -531,7 +537,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1A1A1A;
+  color: #1a1a1a;
   margin: 0;
 }
 
@@ -547,17 +553,17 @@
 }
 
 .components-list::-webkit-scrollbar-track {
-  background: #F0F0F0;
+  background: #f0f0f0;
   border-radius: 3px;
 }
 
 .components-list::-webkit-scrollbar-thumb {
-  background: #C0C0C0;
+  background: #c0c0c0;
   border-radius: 3px;
 }
 
 .components-list::-webkit-scrollbar-thumb:hover {
-  background: #A0A0A0;
+  background: #a0a0a0;
 }
 
 .component-item {
@@ -566,7 +572,7 @@
   align-items: center;
   gap: 4px;
   padding: 8px 10px;
-  background: #FAFAFA;
+  background: #fafafa;
   border-radius: 10px;
   min-width: 75px;
   flex-shrink: 0;
@@ -591,7 +597,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1A1A1A;
+  color: #1a1a1a;
 }
 
 .component-icon svg {
@@ -603,7 +609,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 500;
-  color: #1A1A1A;
+  color: #1a1a1a;
   text-align: center;
   max-width: 80px;
   line-height: 1.2;
@@ -611,7 +617,7 @@
 
 .component-item .confidence {
   font-size: 9px;
-  color: #00879F;
+  color: #00879f;
   font-weight: 600;
 }
 
@@ -621,7 +627,7 @@
   object-fit: contain;
   border-radius: 8px;
   background: #fff;
-  border: 1px solid #E5E5E5;
+  border: 1px solid #e5e5e5;
 }
 
 .text-placeholder {
@@ -644,7 +650,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 600;
-  color: #1A1A1A;
+  color: #1a1a1a;
   margin: 0;
 }
 
@@ -661,18 +667,18 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #E6F7F9;
+  background: #e6f7f9;
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: #00879F;
+  color: #00879f;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .text-badge:hover {
-  background: #D0F0F5;
+  background: #d0f0f5;
 }
 
 .text-badge .copy-icon {
@@ -687,16 +693,15 @@
 }
 
 .text-items::-webkit-scrollbar-track {
-  background: #F0F0F0;
+  background: #f0f0f0;
   border-radius: 3px;
 }
 
 .text-items::-webkit-scrollbar-thumb {
-  background: #C0C0C0;
+  background: #c0c0c0;
   border-radius: 3px;
 }
 
 .text-items::-webkit-scrollbar-thumb:hover {
-  background: #A0A0A0;
+  background: #a0a0a0;
 }
-

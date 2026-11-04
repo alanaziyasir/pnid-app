@@ -1,9 +1,9 @@
-import "./globals.css";
-import { ReactNode } from "react";
+import './globals.css';
+import { ReactNode } from 'react';
 
 export const metadata = {
-  title: "P&ID Digitization",
-  description: "Upload and process P&ID diagrams",
+  title: 'P&ID Digitization',
+  description: 'Upload and process P&ID diagrams',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -13,5 +13,3 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   );
 }
-
-

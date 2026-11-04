@@ -7,7 +7,7 @@ with a clearly labeled HTTP stub. It runs the real frontend and backend.
 
 ## 1. Install dependencies (Linux/macOS)
 
-Requirements: Python 3.10+ with `venv`/pip, Node.js 20.9+ (22 or 24 recommended),
+Requirements: Python 3.12 with `venv`/pip, Node.js 24,
 and npm. Run these commands from the repository root:
 
 ```bash
@@ -18,7 +18,7 @@ npm --prefix frontend ci
 ```
 
 `requirements-deploy.txt` contains everything imported by the running API,
-including `httpx`. The larger `requirements.txt` and `requirements_minimal.txt`
+including `httpx`, Pillow, NumPy, and headless OpenCV. The larger `requirements.txt` and `requirements_minimal.txt`
 are for experimental image/ML tools, not required to run this application.
 No database, GPU, model download, GraphML file, or API credentials are needed
 for local QA.
@@ -63,18 +63,26 @@ Open the printed frontend URL. Always use that exact origin; `localhost` and
 2. Confirm `example.png`, **Uploaded**, and a visible image preview.
 3. Use **Expand diagram** to view fullscreen, then **Close fullscreen**.
 4. Click **Process**. Confirm navigation to `/analysis?file=...`, the same image,
-   a **Summary**, and 10 sample components.
-5. Click **Tags**, **Components**, and **All**. Confirm the overlay boxes change.
+   a loading state, then a **Summary** with template-matched components.
+5. Click **Tags**, **Components**, and **All**. Tags shows zero boxes and an
+   **OCR is unavailable** notice; Components/All shows the computed boxes.
 6. Enter `Which components are connected?` and send it. Expect:
    `[Local QA stub, no AI inference] Received: Which components are connected?`
 7. Return to the home page, upload again, and use **Remove diagram** to confirm
    the upload picker returns.
 
-The analysis page currently uses bundled sample detections, OCR, and crop
-images for every upload. **Process does not perform new OCR/preprocessing**;
-there are no `/api/process/*` routes. The stub verifies the provider request
-shape and echoes the question; it does not validate model quality or graph
-reasoning. Those limitations are not hidden by this QA workflow.
+Process calls `POST /api/detect` with the uploaded `stored_name`. The backend
+decodes that PNG/JPEG and matches ten bundled symbol templates at their original
+scale and orientation. Input is limited to four million pixels, two simultaneous
+detection requests, and 100 output matches. Scores are normalized correlations,
+not calibrated probabilities. Other upload formats are not converted.
+
+A blank image returns zero components. Corrupt, unsupported, or oversized images
+show an error instead of sample data. OCR is unavailable, so no text or tag boxes
+are fabricated. This is limited template matching, not general P&ID recognition.
+It does not generate a connectivity graph or change chat context for the upload.
+The local chat stub verifies provider request shape and echoes the question; it
+does not validate detection quality or graph reasoning.
 
 ## Automated browser regression
 
@@ -97,7 +105,8 @@ python3 -m unittest discover -s scripts -p 'test_*.py'
 
 Playwright starts and stops its own isolated stack on **3100/8100**, with no
 reuse of existing servers. It checks upload over HTTP, exact stored image bytes,
-loaded previews, fullscreen, navigation, overlay tabs, chat through the backend
+loaded previews, fullscreen, image-dependent detection, empty/error/loading states,
+stale-request cancellation, overlay tabs, chat through the backend
 and local provider, removal, and unsupported-file rejection. Ports 3100/8100
 must be free. Failures retain traces under `frontend/test-results/`.
 
@@ -131,17 +140,25 @@ hostname. Restart Next.js after changing it (rebuild for production).
 
 | Setting | Used by | Default / purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Frontend | `http://localhost:8000`; uploads, image URLs, chat |
+| `NEXT_PUBLIC_API_URL` | Frontend | `http://localhost:8000`; uploads, detection, image URLs, chat |
 | `FRONTEND_URL` | Backend | Extra exact allowed CORS origin; localhost and 127.0.0.1 on port 3000 are already allowed |
 | `GROQ_API_KEY` | Backend only | Unset; required only for live chat, never put in a `NEXT_PUBLIC_*` variable |
 | `GROQ_API_URL` | Backend only | Groq's chat completions endpoint; overridden by the QA launcher |
 | `GRAPHML_PATH` | Backend only | `data/graph.graphml`, relative to the backend working directory; optional live chat context |
 | `UPLOAD_DIR` | Backend only | `backend/uploads`; QA overrides this with temporary storage |
+| `ENABLE_CHAT` | Backend only | `true`; set `false` to disable live chat and UI chat controls |
+| `ENABLE_METRICS` | Backend only | `false`; trusted-network Prometheus scrape endpoint when enabled |
 
 There is no automatic `.env` loading in the backend: export variables before
 startup or pass `--env-file .env` to Uvicorn. Missing graph data logs a warning
 and leaves chat without graph context. Without a key, live chat returns an error;
 uploads/preview still work. Use the local QA launcher for credential-free chat.
+
+## Contributor quality checks
+
+Follow [QUALITY.md](QUALITY.md) to install pre-commit hooks, check formatting
+and complexity in both applications, and catch files over 1 MiB before committing.
+The same checks run in CI.
 
 ## Troubleshooting
 

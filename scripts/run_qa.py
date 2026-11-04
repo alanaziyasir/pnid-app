@@ -1,10 +1,8 @@
 """Run the real frontend/API with an isolated, explicitly fake chat provider."""
+
 import argparse
-from contextlib import ExitStack
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
-from pathlib import Path
 import shutil
 import signal
 import socket
@@ -12,6 +10,9 @@ import subprocess
 import tempfile
 import threading
 import time
+from contextlib import ExitStack
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from urllib.error import URLError
 from urllib.request import urlopen
 
@@ -37,10 +38,16 @@ class ChatStub(BaseHTTPRequestHandler):
             question = messages[-1]["content"]
             if messages[-1]["role"] != "user" or not question.strip():
                 raise ValueError("Expected a nonempty user question")
-            body = {"choices": [{"message": {
-                "role": "assistant",
-                "content": f"[Local QA stub, no AI inference] Received: {question}",
-            }}]}
+            body = {
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": f"[Local QA stub, no AI inference] Received: {question}",
+                        }
+                    }
+                ]
+            }
         except (ValueError, KeyError, IndexError, TypeError):
             status = status if status != 200 else 400
             body = {"error": "Invalid local QA provider request"}
@@ -100,7 +107,9 @@ def main():
             try:
                 probe.bind(("127.0.0.1", port))
             except OSError:
-                parser.error(f"Port {port} is in use. Choose another port; do not stop unrelated servers.")
+                parser.error(
+                    f"Port {port} is in use. Choose another port; do not stop unrelated servers."
+                )
 
     python = ROOT / "backend/venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     next_cli = ROOT / "frontend/node_modules/next/dist/bin/next"
@@ -131,23 +140,43 @@ def main():
             "ALLOW_ALL_ORIGINS": "false",
         }
         backend = subprocess.Popen(
-            [str(python), "-m", "uvicorn", "app.main:app", "--host", "127.0.0.1",
-             "--port", str(args.backend_port)],
-            cwd=ROOT / "backend", env=backend_env,
+            [
+                str(python),
+                "-m",
+                "uvicorn",
+                "app.main:app",
+                "--no-access-log",
+                "--host",
+                "127.0.0.1",
+                "--port",
+                str(args.backend_port),
+            ],
+            cwd=ROOT / "backend",
+            env=backend_env,
         )
         stack.callback(stop_process, backend)
         wait_ready(f"{backend_url}/health", [backend], stopped)
         frontend = subprocess.Popen(
-            [node, str(next_cli), "dev", "--hostname", "127.0.0.1",
-             "--port", str(args.frontend_port)],
+            [
+                node,
+                str(next_cli),
+                "dev",
+                "--hostname",
+                "127.0.0.1",
+                "--port",
+                str(args.frontend_port),
+            ],
             cwd=ROOT / "frontend",
             env={**os.environ, "NEXT_PUBLIC_API_URL": backend_url, "NEXT_TELEMETRY_DISABLED": "1"},
         )
         stack.callback(stop_process, frontend)
         wait_ready(frontend_url, [backend, frontend], stopped)
-        print(f"\nQA ready: {frontend_url}\nAPI docs: {backend_url}/docs\n"
-              "Chat uses a local stub, not real inference. Uploads are temporary.\n"
-              "Press Ctrl+C to stop both servers and remove QA uploads.", flush=True)
+        print(
+            f"\nQA ready: {frontend_url}\nAPI docs: {backend_url}/docs\n"
+            "Chat uses a local stub, not real inference. Uploads are temporary.\n"
+            "Press Ctrl+C to stop both servers and remove QA uploads.",
+            flush=True,
+        )
         while not stopped.wait(0.5):
             if backend.poll() is not None or frontend.poll() is not None:
                 raise RuntimeError("A QA server exited. See its output above.")
@@ -159,4 +188,4 @@ if __name__ == "__main__":
     except InterruptedError:
         pass
     except (RuntimeError, OSError) as error:
-        raise SystemExit(str(error))
+        raise SystemExit(str(error)) from error

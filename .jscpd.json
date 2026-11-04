@@ -1,0 +1,10 @@
+{
+  "threshold": 5,
+  "minLines": 12,
+  "minTokens": 100,
+  "format": ["typescript", "tsx", "python"],
+  "ignore": ["**/*.test.ts", "**/tests/**", "**/test_*.py"],
+  "reporters": ["console", "json"],
+  "output": "../reports/duplication",
+  "gitignore": true
+}

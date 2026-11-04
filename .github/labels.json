@@ -1,0 +1,12 @@
+[
+  {"name":"P0","color":"B60205","description":"Critical incident or immediate security risk"},
+  {"name":"P1","color":"D93F0B","description":"High priority, blocks normal use"},
+  {"name":"P2","color":"FBCA04","description":"Normal priority"},
+  {"name":"P3","color":"C2E0C6","description":"Low priority or improvement"},
+  {"name":"type: bug","color":"D73A4A","description":"Incorrect existing behavior"},
+  {"name":"type: feature","color":"A2EEEF","description":"New capability"},
+  {"name":"type: chore","color":"CFD3D7","description":"Maintenance and tooling"},
+  {"name":"area: frontend","color":"1D76DB","description":"Next.js UI"},
+  {"name":"area: backend","color":"5319E7","description":"FastAPI and provider integration"},
+  {"name":"area: infra","color":"006B75","description":"Build, CI, development, and operations"}
+]

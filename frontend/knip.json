@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "app/**/page.tsx",
+    "app/**/layout.tsx",
+    "app/**/route.ts",
+    "e2e/**/*.spec.ts",
+    "lib/**/*.test.ts",
+    "app/**/*.test.ts"
+  ],
+  "project": ["app/**/*.{ts,tsx}", "lib/**/*.ts", "*.config.{ts,mjs}", "e2e/**/*.ts"],
+  "next": { "config": ["next.config.mjs"] }
+}

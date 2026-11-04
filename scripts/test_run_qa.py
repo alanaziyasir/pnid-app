@@ -1,16 +1,17 @@
 """Regression tests for the local-only provider and launcher safety checks."""
+
 import json
-from pathlib import Path
 import socket
 import subprocess
 import sys
 import threading
 import unittest
+from pathlib import Path
+from unittest.mock import Mock
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from run_qa import ChatStub, ThreadingHTTPServer, stop_process
-from unittest.mock import Mock
 
 
 class ChatStubTests(unittest.TestCase):
@@ -36,23 +37,34 @@ class ChatStubTests(unittest.TestCase):
             return response.status, json.load(response)
 
     def test_contract_returns_explicit_stub_response(self):
-        status, body = self.post({
-            "model": "llama-3.1-8b-instant",
-            "messages": [
-                {"role": "system", "content": "P&ID context"},
-                {"role": "user", "content": "Which components?"},
-            ],
-        })
+        status, body = self.post(
+            {
+                "model": "llama-3.1-8b-instant",
+                "messages": [
+                    {"role": "system", "content": "P&ID context"},
+                    {"role": "user", "content": "Which components?"},
+                ],
+            }
+        )
         self.assertEqual(status, 200)
-        self.assertEqual(body["choices"][0]["message"], {
-            "role": "assistant",
-            "content": "[Local QA stub, no AI inference] Received: Which components?",
-        })
+        self.assertEqual(
+            body["choices"][0]["message"],
+            {
+                "role": "assistant",
+                "content": "[Local QA stub, no AI inference] Received: Which components?",
+            },
+        )
 
     def test_rejects_missing_system_context(self):
-        self.assertEqual(self.post({
-            "model": "test", "messages": [{"role": "user", "content": "Question"}],
-        })[0], 400)
+        self.assertEqual(
+            self.post(
+                {
+                    "model": "test",
+                    "messages": [{"role": "user", "content": "Question"}],
+                }
+            )[0],
+            400,
+        )
 
     def test_rejects_real_credentials_and_unknown_paths(self):
         self.assertEqual(self.post({}, token="not-a-qa-token")[0], 401)
@@ -63,7 +75,9 @@ class LauncherTests(unittest.TestCase):
     def launch(self, *args):
         return subprocess.run(
             [sys.executable, str(Path(__file__).with_name("run_qa.py")), *args],
-            capture_output=True, text=True, timeout=5,
+            capture_output=True,
+            text=True,
+            timeout=5,
         )
 
     def test_rejects_duplicate_ports(self):

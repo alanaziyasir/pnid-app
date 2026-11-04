@@ -2,8 +2,15 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: false,
-  workers: 1,
+  fullyParallel: true,
+  workers: 2,
+  retries: process.env.CI ? 1 : 0,
+  failOnFlakyTests: Boolean(process.env.CI),
+  reporter: [
+    ['list'],
+    ['junit', { outputFile: 'test-results/e2e.xml' }],
+    ['html', { open: 'never' }],
+  ],
   use: {
     baseURL: 'http://127.0.0.1:3100',
     browserName: 'chromium',

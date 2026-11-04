@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible application or tooling failure
+labels: ["type: bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Application area
+      options: [Frontend, Backend, Infrastructure]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Include versions, command or page, and a public/bundled fixture. No secrets or private diagrams.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Impact and available evidence
+      description: Redacted errors, request ID, and relevant test results.

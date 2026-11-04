@@ -1,0 +1,12 @@
+-r backend/requirements-deploy.in
+pre-commit==4.3.0
+ruff==0.14.3
+mypy==2.4.1
+types-aiofiles==25.1.0.20260518
+pytest==9.2.0
+pytest-cov==7.1.0
+pytest-xdist==3.8.0
+pytest-randomly==5.0.0
+pytest-repeat==0.9.4
+deptry==0.25.1
+uv==0.13.7
