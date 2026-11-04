@@ -1,0 +1,72 @@
+name: Error to issue
+
+# When Quality gates fails on main, turn the failure into a tracked, labeled
+# issue instead of leaving it buried in the Actions log. One open issue per
+# failure is maintained; recovery closes it on the next green run.
+
+on:
+  workflow_run:
+    workflows: ["Quality gates"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  issues: write
+  contents: read
+  actions: read
+
+concurrency:
+  group: error-to-issue
+  cancel-in-progress: false
+
+jobs:
+  track-failure:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Open or update the CI failure issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRIGGER_ACTOR: ${{ github.event.workflow_run.triggering_actor.login }}
+        run: |
+          failed_jobs=$(gh api "repos/${REPO}/actions/runs/${RUN_ID}/jobs" \
+            --jq '.jobs[] | select(.conclusion == "failure") | .name' | sed 's/^/- /')
+          existing=$(gh issue list -R "$REPO" --state open \
+            --search 'in:title "CI failed on main"' --json number --jq '.[0].number')
+          comment="Quality gates failed on main again.
+          Commit: ${HEAD_SHA}
+          Triggered by: ${TRIGGER_ACTOR}
+          Failed jobs:
+          ${failed_jobs}
+          Run: ${RUN_URL}"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" -R "$REPO" --body "$comment"
+          else
+            gh issue create -R "$REPO" \
+              --title "CI failed on main (run #${RUN_ID})" \
+              --body "$comment" \
+              --label "type: bug" --label "P1"
+          fi
+
+  close-on-recovery:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Close the open CI failure issue when main recovers
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          existing=$(gh issue list -R "$REPO" --state open \
+            --search 'in:title "CI failed on main"' --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" -R "$REPO" \
+              --comment "Quality gates on main is green again: ${RUN_URL}"
+          fi

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { API_URL, apiFetch } from '../lib/api';
 import { formatFileSize } from '../lib/format';
 import { logError } from '../lib/logger';
+import { trackEvent } from '../lib/telemetry';
 
 interface UploadedFile {
   id: string;
@@ -38,6 +39,7 @@ export default function Page() {
   const uploadFile = async (file: File) => {
     setIsUploading(true);
     setUploadProgress(0);
+    trackEvent('upload_started');
 
     const formData = new FormData();
     formData.append('file', file);
@@ -63,11 +65,13 @@ export default function Page() {
       clearInterval(progressInterval);
 
       if (!response.ok) {
+        trackEvent('upload_failed', response.status);
         const error = await response.json();
         throw new Error(error.detail || 'Upload failed');
       }
 
       const data = await response.json();
+      trackEvent('upload_completed');
       setUploadProgress(100);
 
       setTimeout(() => {

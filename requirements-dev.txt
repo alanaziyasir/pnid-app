@@ -96,6 +96,7 @@ certifi==2026.10.23 \
     #   -c backend/requirements_minimal.txt
     #   httpcore
     #   httpx
+    #   sentry-sdk
 cfgv==3.5.0 \
     --hash=sha256:a8dc6b26ad22ff227d2634a65cb388215ce6cc96bbcc5cfde7641ae87e8dacc0 \
     --hash=sha256:d5b1034354820651caa73ede66a6294d6e95c1b00acc5e9b098e917404669132
@@ -1036,6 +1037,13 @@ ruff==0.14.3 \
     --hash=sha256:e231e1be58fc568950a04fbe6887c8e4b85310e7889727e2b81db205c45059eb \
     --hash=sha256:f3d91857d023ba93e14ed2d462ab62c3428f9bbf2b4fbac50a03ca66d31991f7
     # via -r requirements-dev.in
+sentry-sdk==2.73.0 \
+    --hash=sha256:0bcfa6928ea5adbb89591858b514d27adac27c7a3cccc31b20ed10e0b09eda9e \
+    --hash=sha256:4a2ab97b16e4693c325ab361c7bbbb346dbc7d0bc0150922d795a25bac8d5280
+    # via
+    #   -c backend/requirements.txt
+    #   -c backend/requirements_minimal.txt
+    #   -r backend/requirements-deploy.in
 starlette==1.10.0 \
     --hash=sha256:478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4 \
     --hash=sha256:b8399098d4c1e3522734f7235dc79b1fc967f96cf139c81e0fa30479e0685f9b
@@ -1137,6 +1145,13 @@ typing-inspection==0.4.4 \
     #   -c backend/requirements_minimal.txt
     #   fastapi
     #   pydantic
+urllib3==2.8.0 \
+    --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3 \
+    --hash=sha256:63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63
+    # via
+    #   -c backend/requirements.txt
+    #   -c backend/requirements_minimal.txt
+    #   sentry-sdk
 uv==0.13.7 \
     --hash=sha256:08f16fd463926786b702b497473511deae4b3e17a2fa6d22180950d6059a120d \
     --hash=sha256:158953b8669bee6f4bc2babdd997e34ff9f0d57170093cfe907f64448292b7c3 \

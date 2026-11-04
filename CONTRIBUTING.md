@@ -51,6 +51,17 @@ criteria: `TODO(https://github.com/alanaziyasir/pnid-app/issues/123)`.
 The source scanner rejects unlinked TODO/FIXME comments. File a real issue only
 when authorized; no synthetic tickets merely to satisfy a check.
 
+## Feature flags
+
+Feature flags follow a documented lifecycle: define `ENABLE_*` (backend
+`config.py`) or `NEXT_PUBLIC_ENABLE_*` (frontend code) switches, document them
+in the matching `.env.example`, and wire them into application code. `make check`
+fails a flag that is defined but undocumented, documented but undefined, or
+referenced only by tests and scripts. When a flag's rollout is complete, remove
+both the switch and its `.env.example` entry in the same change; the gate then
+keeps dead switches out of the tree automatically.
+
+
 Issue taxonomy is checked into [.github/labels.json](.github/labels.json):
 priority P0–P3, type bug/feature/chore, and area frontend/backend/infra.
 An owner can run the manual **Sync issue labels** workflow once to apply it.

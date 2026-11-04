@@ -29,6 +29,7 @@ docs:
 
 dependencies:
 	$(PYTHON) -m deptry backend/app
+	$(PYTHON) scripts/check_dependency_weight.py
 	npm --prefix frontend run check:unused
 
 duplicates:

@@ -22,6 +22,8 @@ MAX_FILE_SIZE = 50 * 1024 * 1024
 ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true").lower() == "true"
 # Scrape only on a trusted network; the endpoint is disabled by default.
 ENABLE_METRICS = os.getenv("ENABLE_METRICS", "false").lower() == "true"
+# Optional Sentry DSN; empty leaves error tracking fully disabled.
+SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 
 # CORS settings
 ALLOWED_ORIGINS = [

@@ -19,6 +19,18 @@ VALID_ID = re.compile(r"[A-Za-z0-9_-]{1,64}")
 HTTP_METHODS = {"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 
+def init_error_tracking(dsn: str) -> bool:
+    """Activate Sentry only when a DSN is configured, without PII or tracing."""
+    if not dsn:
+        logger.info("error_tracking_disabled", extra={"reason": "missing dsn"})
+        return False
+    import sentry_sdk
+
+    sentry_sdk.init(dsn=dsn, send_default_pii=False, traces_sample_rate=0.0)
+    logger.info("error_tracking_enabled", extra={})
+    return True
+
+
 class RequestTelemetry(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         candidate = request.headers.get("x-request-id", "")

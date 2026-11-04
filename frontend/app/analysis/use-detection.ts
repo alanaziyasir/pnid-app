@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { DetectionResult, loadDetections } from '../../lib/detection';
 import { logError } from '../../lib/logger';
+import { trackEvent } from '../../lib/telemetry';
 
 interface State {
   storedName: string | null;
@@ -27,14 +28,17 @@ export function useDetection(storedName: string | null) {
       return () => controller.abort();
     }
     setState({ ...initial, loading: true, error: '' });
+    trackEvent('detection_started');
     loadDetections(storedName, controller.signal)
       .then((result) => {
         if (!controller.signal.aborted) {
+          trackEvent('detection_completed');
           setState({ storedName, result, loading: false, error: '' });
         }
       })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
+        trackEvent('detection_failed');
         logError('detection_failed');
         setState({
           ...initial,

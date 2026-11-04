@@ -6,9 +6,15 @@ export const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:800
   '',
 );
 
-export async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
+export interface ApiFetchOptions extends RequestInit {
+  /** Best-effort requests (product analytics) skip error logging. */
+  silent?: boolean;
+}
+
+export async function apiFetch(path: string, options: ApiFetchOptions = {}): Promise<Response> {
   const method = (options.method || 'GET').toUpperCase();
   const attempts = method === 'GET' ? 3 : 1;
+  const silent = options.silent === true;
   const requestId = crypto.randomUUID
     ? crypto.randomUUID()
     : Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
@@ -22,13 +28,15 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
   for (let attempt = 0; attempt < attempts; attempt++) {
     try {
       const response = await fetch(`${API_URL}${path}`, { ...options, headers, signal });
-      if (!response.ok) logError('api_request_failed', { requestId, status: response.status });
+      if (!response.ok && !silent) {
+        logError('api_request_failed', { requestId, status: response.status });
+      }
       if (![429, 502, 503, 504].includes(response.status) || attempt === attempts - 1) {
         return response;
       }
     } catch {
       if (signal.aborted || attempt === attempts - 1) {
-        logError('api_request_failed', { requestId });
+        if (!silent) logError('api_request_failed', { requestId });
         throw new Error('API request failed. Please try again.');
       }
     }

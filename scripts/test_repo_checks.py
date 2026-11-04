@@ -3,7 +3,14 @@
 import json
 from types import SimpleNamespace
 
-from check_repo import LOCKS, dependency_errors, doc_errors, pins, source_errors
+from check_repo import (
+    LOCKS,
+    dependency_errors,
+    doc_errors,
+    feature_flag_errors,
+    pins,
+    source_errors,
+)
 
 
 def manifests(tmp_path):
@@ -71,3 +78,93 @@ def test_docs_gate_checks_links_and_make_targets(tmp_path, monkeypatch):
     errors = doc_errors(tmp_path)
     assert any("broken local link" in error for error in errors)
     assert any("make obsolete" in error for error in errors)
+
+
+def flag_tree(tmp_path, sources, backend_contract="", frontend_contract=""):
+    contracts = {
+        "backend/.env.example": backend_contract,
+        "frontend/.env.example": frontend_contract,
+    }
+    for name, body in contracts.items():
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(body)
+    for name, body in sources.items():
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_text(body)
+    return dict(sources)
+
+
+def test_flag_gate_accepts_live_documented_flags(tmp_path):
+    sources = flag_tree(
+        tmp_path,
+        {
+            "backend/config.py": 'ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true")\n',
+            "backend/app/routers/chat.py": "from config import ENABLE_CHAT\n",
+        },
+        backend_contract="ENABLE_CHAT=true\n",
+    )
+    assert feature_flag_errors(sources, tmp_path) == []
+
+
+def test_flag_gate_flags_dead_unused_switches(tmp_path):
+    sources = flag_tree(
+        tmp_path,
+        {
+            "backend/config.py": (
+                'ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true")\n'
+                'ENABLE_METRICS = os.getenv("ENABLE_METRICS", "false")\n'
+            ),
+            "backend/app/routers/chat.py": "from config import ENABLE_CHAT\n",
+        },
+        backend_contract="ENABLE_CHAT=true\nENABLE_METRICS=false\n",
+    )
+    errors = feature_flag_errors(sources, tmp_path)
+    assert len(errors) == 1
+    assert "ENABLE_METRICS is dead" in errors[0]
+
+
+def test_flag_gate_rejects_undocumented_and_undefined_flags(tmp_path):
+    sources = flag_tree(
+        tmp_path,
+        {
+            "backend/config.py": (
+                'ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true")\n'
+                'ENABLE_LEGACY = os.getenv("ENABLE_LEGACY", "false")\n'
+            ),
+            "backend/app/routers/chat.py": (
+                "from config import ENABLE_CHAT\nfrom config import ENABLE_LEGACY\n"
+            ),
+        },
+        backend_contract="ENABLE_CHAT=true\nENABLE_METRICS=false\n",
+    )
+    errors = feature_flag_errors(sources, tmp_path)
+    assert any("ENABLE_LEGACY is defined but not documented" in error for error in errors)
+    assert any("ENABLE_METRICS is documented but not defined" in error for error in errors)
+
+
+def test_flag_gate_ignores_test_and_script_references(tmp_path):
+    sources = flag_tree(
+        tmp_path,
+        {
+            "backend/config.py": 'ENABLE_CHAT = os.getenv("ENABLE_CHAT", "true")\n',
+            "backend/tests/test_chat.py": "ENABLE_CHAT\n",
+            "scripts/check_repo.py": "ENABLE_CHAT\n",
+        },
+        backend_contract="ENABLE_CHAT=true\n",
+    )
+    errors = feature_flag_errors(sources, tmp_path)
+    assert any("ENABLE_CHAT is dead" in error for error in errors)
+
+
+def test_flag_gate_tracks_frontend_switches(tmp_path):
+    sources = flag_tree(
+        tmp_path,
+        {"frontend/lib/theme.test.ts": "NEXT_PUBLIC_ENABLE_DARK_MODE\n"},
+        frontend_contract="NEXT_PUBLIC_ENABLE_DARK_MODE=false\n",
+    )
+    errors = feature_flag_errors(sources, tmp_path)
+    assert any("NEXT_PUBLIC_ENABLE_DARK_MODE is dead" in error for error in errors)
+    live = dict(sources)
+    live["frontend/lib/theme.ts"] = "if (process.env.NEXT_PUBLIC_ENABLE_DARK_MODE) enable();\n"
+    assert feature_flag_errors(live, tmp_path) == []

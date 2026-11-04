@@ -5,10 +5,20 @@ import path from 'node:path';
 const api = 'http://127.0.0.1:8100';
 const diagram = path.resolve('public/example.png');
 
-function detectionResponse(page: Page) {
-  return page.waitForResponse(
-    (response) => response.url() === `${api}/api/detect` && response.request().method() === 'POST',
-  );
+async function detectionResponse(page: Page): Promise<Response> {
+  // The detector serves bounded concurrency and replies 503 when its slots
+  // are full; the app retries those transparently. The settled response,
+  // not the first transient one, is what the UI and this suite rely on.
+  const detectPost = () =>
+    page.waitForResponse(
+      (response) =>
+        response.url() === `${api}/api/detect` && response.request().method() === 'POST',
+    );
+  let response = await detectPost();
+  while (response.status() === 503) {
+    response = await detectPost();
+  }
+  return response;
 }
 
 test('upload, preview, analysis tabs, and chat through the real API', async ({ page, request }) => {

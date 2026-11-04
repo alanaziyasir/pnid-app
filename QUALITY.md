@@ -92,8 +92,11 @@ regressions, and browser tests from the quick start after changing behavior.
 exports and dependencies), deptry (unused/undeclared API dependencies), jscpd
 (Python/TypeScript duplication, at most 5%, minimum clone 12 lines/100 tokens),
 and `scripts/check_repo.py` (documentation links/command targets, issue-linked
-debt comments, file sizes, and dependency drift across all Python lock profiles).
-The OpenAPI snapshot must exactly match FastAPI's generated contract.
+debt comments, file sizes, feature flag lifecycle, and dependency drift across
+all Python lock profiles), plus `scripts/check_dependency_weight.py` (installed
+size per top-level deploy dependency against a fixed budget).
+The OpenAPI snapshot must exactly match FastAPI's generated contract, and
+`frontend/openapi.json` must match the frontend `/health` response.
 Tests are excluded from duplication analysis because independent explicit test
 assertions and fixtures are not production reuse opportunities.
 
