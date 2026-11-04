@@ -28,7 +28,8 @@ make build
 
 `make check` validates formatting, complexity, unused code/dependencies, strict
 typing, docs/commands, issue-linked debt markers, duplicate code, file sizes,
-dependency drift, and the OpenAPI snapshot. CI executes these same commands.
+feature flag lifecycle, dependency drift, dependency weight, and the OpenAPI
+snapshots. CI executes these same commands.
 Never suppress rules, omit tests, or raise thresholds merely to get green checks.
 
 Backend tests use `backend/tests/test_*.py`; script tests use `scripts/test_*.py`.

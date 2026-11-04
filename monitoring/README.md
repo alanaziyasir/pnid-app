@@ -18,8 +18,14 @@ Useful Prometheus queries for deployment impact:
 ```promql
 sum by (route, status) (rate(pnid_http_requests_total[5m]))
 histogram_quantile(0.95, sum by (le, route) (rate(pnid_http_request_duration_seconds_bucket[5m])))
+sum by (event_type) (rate(pnid_frontend_events_total[5m]))
 probe_success{job="application-health"}
 ```
+
+The `pnid_frontend_events_total` counter comes from `POST /api/events`: the
+browser reports allowlisted feature events (uploads, detection, chat) so
+frontend behavior is observable next to backend HTTP metrics. Payloads carry
+only the event name and an optional coarse status; nothing user-identifying.
 
 Alerts cover failing frontend/backend health probes, elevated API 5xx rate,
 and p95 API latency. `make monitoring-check` validates the Prometheus config,

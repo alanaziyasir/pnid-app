@@ -2,15 +2,17 @@
 Main FastAPI application for P&ID Digitization
 """
 
-from config import ALLOWED_ORIGINS, ENABLE_CHAT, ENABLE_METRICS, UPLOAD_DIR
+from config import ALLOWED_ORIGINS, ENABLE_CHAT, ENABLE_METRICS, SENTRY_DSN, UPLOAD_DIR
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
-from app.observability import RequestTelemetry
-from app.routers import chat, detection, upload
+from app.observability import RequestTelemetry, init_error_tracking
+from app.routers import chat, detection, events, upload
+
+init_error_tracking(SENTRY_DSN)
 
 app = FastAPI(
     title="P&ID Digitization API",
@@ -36,6 +38,7 @@ app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 app.include_router(upload.router)
 app.include_router(chat.router)
 app.include_router(detection.router)
+app.include_router(events.router)
 
 
 @app.get("/")

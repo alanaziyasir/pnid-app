@@ -4,11 +4,25 @@ import logging
 import re
 
 import pytest
+import sentry_sdk
 from app import main
 from app.logging import JsonFormatter, request_id
-from app.observability import RequestTelemetry
+from app.observability import RequestTelemetry, init_error_tracking
 from app.resilience import CircuitBreaker, CircuitOpenError
 from starlette.requests import Request
+
+
+def test_error_tracking_stays_disabled_without_a_dsn():
+    assert init_error_tracking("") is False
+
+
+def test_error_tracking_initializes_sentry_without_pii(monkeypatch):
+    calls = {}
+    monkeypatch.setattr(sentry_sdk, "init", lambda **kwargs: calls.update(kwargs))
+    assert init_error_tracking("https://public@sentry.invalid/1") is True
+    assert calls["dsn"] == "https://public@sentry.invalid/1"
+    assert calls["send_default_pii"] is False
+    assert calls["traces_sample_rate"] == 0.0
 
 
 def test_health_features_and_metrics(client, monkeypatch):

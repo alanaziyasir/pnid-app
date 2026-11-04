@@ -1,0 +1,48 @@
+{
+  "components": {
+    "schemas": {
+      "Health": {
+        "description": "Liveness response served by the Next.js route handler.",
+        "properties": {
+          "service": {
+            "const": "frontend",
+            "type": "string"
+          },
+          "status": {
+            "const": "healthy",
+            "type": "string"
+          }
+        },
+        "required": ["service", "status"],
+        "title": "FrontendHealth",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "HTTP surface exposed by the Next.js frontend. The FastAPI backend publishes its own contract in backend/openapi.json.",
+    "title": "P&ID Frontend API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getFrontendHealth",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "The frontend process is serving requests."
+          }
+        },
+        "summary": "Frontend liveness probe"
+      }
+    }
+  }
+}

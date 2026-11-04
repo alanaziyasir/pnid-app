@@ -5,6 +5,7 @@ import { useState, useEffect, Suspense, useRef } from 'react';
 import './analysis.css';
 import { API_URL, apiFetch } from '../../lib/api';
 import { logError } from '../../lib/logger';
+import { trackEvent } from '../../lib/telemetry';
 import { Detection } from '../../lib/detection';
 import { useDetection } from './use-detection';
 
@@ -225,10 +226,12 @@ function AnalysisContent() {
       });
 
       if (!response.ok) {
+        trackEvent('chat_failed', response.status);
         throw new Error('Failed to get response');
       }
 
       const data = await response.json();
+      trackEvent('chat_sent');
       const assistantMessage: ChatMessage = { role: 'assistant', content: data.response };
       setChatMessages((prev) => [...prev, assistantMessage]);
     } catch {

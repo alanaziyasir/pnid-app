@@ -177,6 +177,60 @@
         "title": "DetectionResult",
         "type": "object"
       },
+      "EventBatch": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/FrontendEvent"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Events",
+            "type": "array"
+          }
+        },
+        "required": [
+          "events"
+        ],
+        "title": "EventBatch",
+        "type": "object"
+      },
+      "FrontendEvent": {
+        "properties": {
+          "status": {
+            "anyOf": [
+              {
+                "maximum": 599.0,
+                "minimum": 100.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "type": {
+            "enum": [
+              "upload_started",
+              "upload_completed",
+              "upload_failed",
+              "detection_started",
+              "detection_completed",
+              "detection_failed",
+              "chat_sent",
+              "chat_failed"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "FrontendEvent",
+        "type": "object"
+      },
       "GraphComponent": {
         "properties": {
           "id": {
@@ -482,6 +536,52 @@
         "summary": "Detect Upload",
         "tags": [
           "detection"
+        ]
+      }
+    },
+    "/api/events": {
+      "post": {
+        "description": "Count allowlisted feature events; the response never echoes payload.",
+        "operationId": "record_events_api_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventBatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "integer"
+                  },
+                  "title": "Response Record Events Api Events Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Record Events",
+        "tags": [
+          "events"
         ]
       }
     },
