@@ -1,4 +1,5 @@
 import { expect, test, Page } from '@playwright/test';
+import type { Response } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
