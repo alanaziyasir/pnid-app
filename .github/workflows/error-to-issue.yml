@@ -50,7 +50,7 @@ jobs:
             gh issue create -R "$REPO" \
               --title "CI failed on main (run #${RUN_ID})" \
               --body "$comment" \
-              --label "type:bug" --label "P1"
+              --label "type: bug" --label "P1"
           fi
 
   close-on-recovery:
